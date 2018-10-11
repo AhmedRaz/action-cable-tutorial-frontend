@@ -52,6 +52,53 @@ class ConversationsList extends React.Component {
    );
  };
 
- 
+  render = () => {
+    const { conversations, activeConversation } = this.state;
+    return (
+      <div className="conversationsList">
+        <ActionCable
+          channel={{ channel: 'ConversationsChannel' }}
+          onReceived={this.handleReceivedConversation}
+        />
+        {this.state.conversations.length ? (
+          <Cable
+            conversations={conversations}
+            handleReceivedMessage={this.handleReceivedMessage}
+          />
+        ) : null}
+        <h2>Conversations</h2>
+        <ul>{mapConversations(conversations, this.handleClick)}</ul>
+        <NewConversationForm />
+        {activeConversation ? (
+          <MessagesArea
+            conversation={findActiveConversation(
+              conversations,
+              activeConversation
+            )}
+          />
+        ) : null}
+      </div>
+    );
+  };
 
 }
+
+export default ConversationsList;
+
+// helpers
+
+const findActiveConversation = (conversations, activeConversation) => {
+  return conversations.find(
+    conversation => conversation.id === activeConversation
+  );
+};
+
+const mapConversations = (conversations, handleClick) => {
+  return conversations.map(conversation => {
+    return (
+      <li key={conversation.id} onClick={() => handleClick(conversation.id)}>
+        {conversation.title}
+      </li>
+    );
+  });
+};
