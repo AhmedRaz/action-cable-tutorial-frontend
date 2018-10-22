@@ -7,6 +7,7 @@ class NewMessageForm extends React.Component {
     conversation_id: this.props.conversation_id
   };
 
+  //possible bugs here, look into updating with componentDidUpdate(prevProps, prevState) 
   componentWillReceiveProps = nextProps => {
     this.setState({ conversation_id: nextProps.conversation_id });
   };
